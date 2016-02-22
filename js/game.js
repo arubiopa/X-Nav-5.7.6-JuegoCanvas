@@ -34,11 +34,30 @@ princessImage.onload = function () {
 };
 princessImage.src = "images/princess.png";
 
+// stone image
+var stoneReady = false;
+var stoneImage = new Image();
+stoneImage.onload = function () {
+	stoneReady = true;
+};
+stoneImage.src = "images/stone.png";
+
+//monster image
+var monsterReady = false;
+var monsterImage = new Image();
+monsterImage.onload = function () {
+	monsterReady = true;
+};
+monsterImage.src = "images/monster.png";
 // Game objects
 var hero = {
 	speed: 256 // movement in pixels per second
 };
+var monster = {};
 var princess = {};
+var stone = {};
+var arrStone = [];
+var numStone = 5;
 var princessesCaught = 0;
 
 // Handle keyboard controls
@@ -58,25 +77,98 @@ var reset = function () {
 	hero.y = canvas.height / 2;
 
 	// Throw the princess somewhere on the screen randomly
-	princess.x = 32 + (Math.random() * (canvas.width - 64));
-	princess.y = 32 + (Math.random() * (canvas.height - 64));
+	princess.x = 32 + (Math.random() * (canvas.width - 100));
+	princess.y = 32 + (Math.random() * (canvas.height - 100));
+	monster.x = 32 + (Math.random() * (canvas.width - 100));
+	monster.y = 32 + (Math.random() * (canvas.height - 100));
+
+	//stone.x = 32 + (Math.random() * (canvas.width - 100));
+	//stone.y = 32 + (Math.random() * (canvas.height - 100));
+
+	/*if (
+		stone.x <= (princess.x + 16)
+		&& princess.x <= (stone.x + 16)
+		&& stone.y <= (princess.y + 16)
+		&& princess.y <= (stone.y + 32)
+	) {
+		stone.x = 32 + (Math.random() * (canvas.width - 80));
+		stone.y = 32 + (Math.random() * (canvas.height - 80));
+	}*/
+	arrStone=[];
+	var pushStone = 0;
+	while(pushStone < numStone){
+			stone= {}
+			stone.x = 32 + (Math.random() * (canvas.width - 80));
+			stone.y = 32 + (Math.random() * (canvas.height - 80));
+			pushStone++;
+
+			if(hero.x <= (stone.x + 16)
+			&& stone.x <= (hero.x + 16)
+			&& hero.y <= (stone.y + 16)
+			&& stone.y <= (hero.y + 32) || stone.x <= (princess.x + 16)
+			&& princess.x <= (stone.x + 16)
+			&& stone.y <= (princess.y + 16)
+			&& princess.y <= (stone.y + 32)){
+				pushStone--;
+			}else{
+				arrStone.push(stone);
+			}
+	}
+
 };
 
 // Update game objects
 var update = function (modifier) {
 	if (38 in keysDown) { // Player holding up
-		hero.y -= hero.speed * modifier;
+		if(hero.y<=34 ||(stone.x <= (hero.x + 32)
+			&& hero.x <= (stone.x + 32)
+			&& stone.y <= (hero.y + 32)
+			&& hero.y <= (stone.y + 32))){
+				hero.y += 1
+		}else{
+			hero.y -= hero.speed * modifier;
+		}
 	}
 	if (40 in keysDown) { // Player holding down
-		hero.y += hero.speed * modifier;
+		if(hero.y >=415 || (stone.x <= (hero.x + 32)
+			&& hero.x <= (stone.x + 32)
+			&& stone.y <= (hero.y + 32)
+			&& hero.y <= (stone.y + 32))){
+				hero.y -= 1
+		}else{
+			hero.y += hero.speed * modifier;
+		}
 	}
 	if (37 in keysDown) { // Player holding left
-		hero.x -= hero.speed * modifier;
+		if(hero.x<=32 || (stone.x <= (hero.x + 32)
+			&& hero.x <= (stone.x + 32)
+			&& stone.y <= (hero.y + 32)
+			&& hero.y <= (stone.y + 32))){
+				hero.y += 1
+		}else{
+			hero.x -= hero.speed * modifier;
+		}
 	}
 	if (39 in keysDown) { // Player holding right
-		hero.x += hero.speed * modifier;
+		if(hero.x>=455 || (stone.x <= (hero.x + 32)
+			&& hero.x <= (stone.x + 32)
+			&& stone.y <= (hero.y + 32)
+			&& hero.y <= (stone.y + 32))){
+				hero.y += 1
+		}else{
+			hero.x += hero.speed * modifier;
+		}
 	}
 
+	if (
+		hero.x <= (monster.x + 16)
+		&& monster.x <= (hero.x + 16)
+		&& hero.y <= (monster.y + 16)
+		&& monster.y <= (hero.y + 32)
+	) {
+		alert("perdiste");
+		location.reload();
+	}
 	// Are they touching?
 	if (
 		hero.x <= (princess.x + 16)
@@ -85,6 +177,17 @@ var update = function (modifier) {
 		&& princess.y <= (hero.y + 32)
 	) {
 		++princessesCaught;
+	{
+		if (princessesCaught <= 3){
+		 		numStone= 4;
+			}else if (princessesCaught > 3 && princessesCaught <= 8) {
+				numStone = 8;
+			}else if (princessesCaught > 8 && princessesCaught <= 12){
+				numStone = 12;
+			}else{
+				numStone = 15;
+			}
+		}
 		reset();
 	}
 };
@@ -103,6 +206,13 @@ var render = function () {
 		ctx.drawImage(princessImage, princess.x, princess.y);
 	}
 
+	if (stoneReady) {
+    ctx.drawImage(stoneImage,stone.x, stone.y);
+	}
+
+	if (monsterReady) {
+    ctx.drawImage(monsterImage,monster.x, monster.y);
+	}
 	// Score
 	ctx.fillStyle = "rgb(250, 250, 250)";
 	ctx.font = "24px Helvetica";
