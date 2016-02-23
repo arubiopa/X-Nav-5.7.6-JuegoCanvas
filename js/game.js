@@ -1,4 +1,4 @@
-// Original game from:
+ // Original game from:
 // http://www.lostdecadegames.com/how-to-make-a-simple-html5-canvas-game/
 // Slight modifications by Gregorio Robles <grex@gsyc.urjc.es>
 // to meet the criteria of a canvas class for DAT @ Univ. Rey Juan Carlos
