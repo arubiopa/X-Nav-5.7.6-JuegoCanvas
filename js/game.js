@@ -62,6 +62,12 @@ var arrStone = [];
 var numStone = 4;
 var princessesCaught = 0;
 
+princessesCaught = localStorage.getItem('princessesCaught');
+numStone = localStorage.getItem('numStone');
+arrStone = localStorage.getItem('arrStone');
+numMonster = localStorage.getItem('numMonster');
+arrMonster = localStorage.getItem('arrMonster');
+
 // Handle keyboard controls
 var keysDown = {};
 
@@ -187,6 +193,11 @@ var update = function (modifier) {
 		&& hero.y <= (arrMonster[i].y + 16)
 		&& arrMonster[i].y <= (hero.y + 32)){
 			alert("perdiste");
+			localStorage.setItem('princessesCaught',0);
+			localStorage.setItem('numStonestone',0);
+			localStorage.setItem('arrStonestone',[]);
+			localStorage.setItem('numMonster',0);
+			localStorage.setItem('arrMonster',[]);
 			location.reload();
 		}
 	}
@@ -200,6 +211,11 @@ var update = function (modifier) {
 		&& princess.y <= (hero.y + 32)
 	) {
 		++princessesCaught;
+		localStorage.setItem('princessesCaught',princessesCaught);
+		localStorage.setItem('numStonestone',numStonestone);
+		localStorage.setItem('arrStonestone',arrStonestone);
+		localStorage.setItem('numMonster',numMonster);
+		localStorage.setItem('arrMonster',arrMonster);
 	{
 		if (princessesCaught <= 3){
 		 		numStone= 4;
